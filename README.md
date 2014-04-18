@@ -6,12 +6,12 @@ For more details refer : http://join.agiliq.com/
 
 Install requirements 
 
-'''
+```
 pip install -r requirements.txt
-'''
+```
 
 Run run.py
 
-'''
+```
 python run.py
-'''
+```
