@@ -7,7 +7,7 @@ os.environ['DEBUG'] = '1' # To work with OAuth server without https
 
 app = Flask(__name__)
 app.debug = True
-app.secret_key = 'development'
+app.secret_key = 'somerandomkey'
 oauth = OAuth(app)
 
 agiliq = oauth.remote_app(
@@ -55,9 +55,7 @@ def authorized(resp):
         "redirect_uri" : "http://local.dev.com:5000/login/authorized" 
         }
     r = requests.get(agiliq.access_token_url, params=params)
-
     data = r.json()
-
     session['agiliq_token'] = data['access_token']
     return redirect(url_for('submit'))
 
