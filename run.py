@@ -1,5 +1,6 @@
-from flask import Flask, redirect, url_for, session, request, render_template
+from flask import Flask, redirect, url_for, session, request, render_template, jsonify
 from flask_oauthlib.client import OAuth
+import requests
 
 import os
 os.environ['DEBUG'] = '1' # To work with OAuth server without https
@@ -13,7 +14,7 @@ agiliq = oauth.remote_app(
     'agiliq',
     consumer_key='D7PBWxpkEb4lEc52sD6r2ilZPVEbyasOCQG6FiMb9DXlTYhGCH',
     consumer_secret='GsW3W4NJsV1d4gKbZuOq7M8yLMwlCGgBa7m5uhqLTmHd6UIENq',
-    request_token_params={},
+    request_token_params={'scope': 'user:email'},
     base_url='http://join.agiliq.com',
     request_token_url=None,
     access_token_method='POST',
@@ -31,7 +32,7 @@ def index():
 def login():
     if session.get('agiliq_token'):
         return redirect(url_for('submit'))
-    return agiliq.authorize(callback=url_for('authorized', _external=True))
+    return agiliq.authorize(callback = url_for('authorized', _external=True))
 
 @app.route('/logout')
 def logout():
@@ -47,12 +48,18 @@ def authorized(resp):
     if error:
     	return "Error occured : {} - {}".format(error,error_desc)
 
-    session['agiliq_token'] = code
+    params = { 
+        "client_id":agiliq.consumer_key, 
+        "client_secret":agiliq.consumer_secret, 
+        "code":code, 
+        "redirect_uri" : "http://local.dev.com:5000/login/authorized" 
+        }
+    r = requests.get(agiliq.access_token_url, params=params)
+
+    data = r.json()
+
+    session['agiliq_token'] = data['access_token']
     return redirect(url_for('submit'))
-    
-@agiliq.tokengetter
-def get_agiliq_oauth_token():
-    return session.get('agiliq_token')
 
 @app.route('/submit', methods = ['GET','POST'])
 def submit():
