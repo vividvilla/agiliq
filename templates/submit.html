@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Upload Resume</title>
+	</head>
+	<body>
+		<h1>Upload Your Resume</h1>
+		<form action="http://join.agiliq.com/api/resume/upload/?access_token={{ access_token }}" method="post" enctype="multipart/form-data">
+			<p><label>First Name</label><input type="text" name="first_name"></p>
+			<p><label>Last Name</label><input type="text" name="last_name"></p>
+			<p><label>Project Url</label><input type="text" name="projects_url"></p>
+			<p><label>Code Url</label><input type="text" name="code_url"></p>
+			<p><label>Resume (PDF)</label><input type="file" name="resume"></p>
+			<input type="submit" value="Submit">
+		</form>
+	</body>
+</html?
